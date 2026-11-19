@@ -244,7 +244,7 @@ function Stat({ label, figure, unit, note, color, pending }: { label: string; fi
           <span className="skeleton block h-12 w-24" />
         ) : (
           <>
-            <span className="flex flex-wrap items-end gap-x-2 gap-y-1">
+            <span key="figure" className="flex flex-wrap items-end gap-x-2 gap-y-1">
               <span className="big text-5xl sm:text-6xl" style={{ color }}>
                 <Flap text={figure} />
               </span>

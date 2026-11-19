@@ -88,7 +88,9 @@ export function CompareView() {
                   {e.city.code} · {e.city.country}
                 </span>
                 {e.pending ? (
-                  <span className="skeleton mt-auto h-14" />
+                  <span className="mt-auto flex h-[7.9rem] flex-col justify-end">
+                    <span className="skeleton h-14" />
+                  </span>
                 ) : e.error != null ? (
                   <span className="mt-auto pt-4 text-sm text-muted">Couldn’t load. See the table below.</span>
                 ) : (

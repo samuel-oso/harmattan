@@ -63,6 +63,51 @@
 
 /* ---------- type: a heavy stencil for titles, a squared military face for text, tall block numerals, a terminal mono for data ---------- */
 
+/* system fonts scaled to set the same text to the same width as each web font, so nothing moves when the real one arrives */
+@font-face {
+  font-family: "Stand-in Stencil";
+  src: local("Arial");
+  size-adjust: 104.5%;
+  ascent-override: 87.4%;
+  descent-override: 32.2%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Stand-in Text";
+  font-weight: 100 500;
+  src: local("Arial");
+  size-adjust: 107%;
+  ascent-override: 99.3%;
+  descent-override: 34.3%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Stand-in Text";
+  font-weight: 600 900;
+  src: local("Arial Bold"), local("Arial");
+  size-adjust: 98.1%;
+  ascent-override: 108.4%;
+  descent-override: 37.4%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Stand-in Figures";
+  font-weight: 100 900;
+  src: local("Arial Bold"), local("Arial");
+  size-adjust: 76%;
+  ascent-override: 126%;
+  descent-override: 62.5%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Stand-in Mono";
+  src: local("Menlo"), local("Courier New");
+  size-adjust: 90%;
+  ascent-override: 98.3%;
+  descent-override: 26.9%;
+  line-gap-override: 0%;
+}
+
 @layer base {
   html {
     scrollbar-gutter: stable;

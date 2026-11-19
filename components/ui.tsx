@@ -56,10 +56,10 @@ export function Failure({ error, onRetry, className = "" }: { error: unknown; on
 const time = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit" });
 
 export function Updated({ at, fetching }: { at: number; fetching: boolean }) {
-  if (!at) return null;
+  // the line keeps its size before there is a time to show, so nothing moves when the data lands
   return (
-    <p className="label text-muted" aria-live="polite">
-      {fetching ? "Updating…" : `Updated ${time.format(at)}`}
+    <p className="label min-h-[1.35em] min-w-[8.4em] whitespace-nowrap text-right text-muted" aria-live="polite">
+      {at ? (fetching ? "Updating…" : `Updated ${time.format(at)}`) : null}
     </p>
   );
 }

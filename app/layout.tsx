@@ -15,10 +15,11 @@ import { siteUrl } from "@/lib/url";
 import { Providers } from "./providers";
 import "./globals.css";
 
-const stencil = Black_Ops_One({ variable: "--font-stencil", subsets: ["latin"], weight: "400" });
-const quantico = Quantico({ variable: "--font-quantico", subsets: ["latin"], weight: ["400", "700"] });
-const teko = Teko({ variable: "--font-teko", subsets: ["latin"], weight: "600" });
-const tech = Share_Tech_Mono({ variable: "--font-tech", subsets: ["latin"], weight: "400" });
+// each face falls back to a stand-in from globals.css, sized to the text this site sets in it
+const stencil = Black_Ops_One({ variable: "--font-stencil", subsets: ["latin"], weight: "400", adjustFontFallback: false, fallback: ["Stand-in Stencil"] });
+const quantico = Quantico({ variable: "--font-quantico", subsets: ["latin"], weight: ["400", "700"], adjustFontFallback: false, fallback: ["Stand-in Text"] });
+const teko = Teko({ variable: "--font-teko", subsets: ["latin"], weight: "600", adjustFontFallback: false, fallback: ["Stand-in Figures"] });
+const tech = Share_Tech_Mono({ variable: "--font-tech", subsets: ["latin"], weight: "400", adjustFontFallback: false, fallback: ["Stand-in Mono"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
