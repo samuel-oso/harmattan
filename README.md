@@ -2,7 +2,7 @@
 
 Air quality across African cities, hour by hour. Named after the dry, dusty wind that crosses West Africa each year.
 
-**Status:** built and tested; deployment to Vercel is next. Setting `launched` to `false` in `lib/site.ts` tells search engines to stay away.
+**Live:** [harmattan-09s.vercel.app](https://harmattan-09s.vercel.app). Setting `launched` to `false` in `lib/site.ts` tells search engines to stay away.
 
 ## Screens
 
