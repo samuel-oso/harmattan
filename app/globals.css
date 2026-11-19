@@ -312,7 +312,7 @@ html[data-boot] .boot {
   place-items: center;
   padding: 1.5rem;
   background: var(--bg);
-  animation: boot-out 0.45s cubic-bezier(0.7, 0, 0.2, 1) 2.4s forwards;
+  animation: boot-out 0.45s cubic-bezier(0.7, 0, 0.2, 1) 1.6s forwards;
 }
 .boot-title {
   font-size: clamp(2.4rem, 11.5vw, 4.4rem);
@@ -325,13 +325,13 @@ html[data-boot] .boot {
   padding: 0.5rem 0;
   border-bottom: 1px solid var(--line);
   animation: boot-line 0.2s steps(3, end) backwards;
-  animation-delay: calc(0.25s + var(--i) * 0.28s);
+  animation-delay: calc(0.2s + var(--i) * 0.18s);
 }
 .boot-bar > span {
   display: block;
   height: 100%;
   transform-origin: left;
-  animation: boot-fill 2s steps(18, end) 0.25s backwards;
+  animation: boot-fill 1.3s steps(18, end) 0.2s backwards;
 }
 @keyframes boot-out {
   to {
