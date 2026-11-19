@@ -21,7 +21,7 @@ export function Heatmap({ grid, label }: { grid: (number | null)[][]; label: str
           <tr>
             <td className="w-9" />
             {HOURS.map((h) => (
-              <th key={h} scope="col" className="num pb-1 text-left text-[0.6875rem] font-normal text-muted">
+              <th key={h} scope="col" className="num pb-1 text-left text-xs font-normal text-muted">
                 <span className={h % 6 === 0 ? "" : "sr-only"}>{String(h).padStart(2, "0")}</span>
               </th>
             ))}
@@ -30,15 +30,15 @@ export function Heatmap({ grid, label }: { grid: (number | null)[][]; label: str
         <tbody>
           {grid.map((row, d) => (
             <tr key={d}>
-              <th scope="row" className="pr-2 text-left text-xs font-normal text-muted">
+              <th scope="row" className="num pr-2 text-left text-xs font-normal uppercase text-muted">
                 <span aria-hidden>{DAYS[d].slice(0, 3)}</span>
                 <span className="sr-only">{DAYS[d]}</span>
               </th>
               {row.map((v, h) => (
                 <td
                   key={h}
-                  title={v != null ? `${DAYS[d]} ${String(h).padStart(2, "0")}:00, ${fmt(v)} ${UNIT}` : undefined}
-                  className="h-6 rounded-[3px] sm:h-7"
+                  data-tip={v != null ? `${DAYS[d]} ${String(h).padStart(2, "0")}:00, ${fmt(v)} ${UNIT}` : undefined}
+                  className="h-6 sm:h-7"
                   style={{ background: v != null ? `color-mix(in srgb, var(--accent) ${Math.round(8 + share(v) * 92)}%, var(--sunk))` : "transparent" }}
                 >
                   <span className="sr-only">{v != null ? fmt(v) : "no data"}</span>
@@ -48,9 +48,9 @@ export function Heatmap({ grid, label }: { grid: (number | null)[][]; label: str
           ))}
         </tbody>
       </table>
-      <p className="mt-3 flex items-center gap-2 text-xs text-muted">
+      <p className="num mt-3 flex items-center gap-2 text-xs text-muted">
         <span className="num">{fmt(low)}</span>
-        <span aria-hidden className="h-2 w-28 rounded-full" style={{ background: "linear-gradient(to right, color-mix(in srgb, var(--accent) 8%, var(--sunk)), var(--accent))" }} />
+        <span aria-hidden className="h-2 w-28" style={{ background: "linear-gradient(to right, color-mix(in srgb, var(--accent) 8%, var(--sunk)), var(--accent))" }} />
         <span className="num">
           {fmt(high)} {UNIT}
         </span>

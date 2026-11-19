@@ -6,7 +6,7 @@ export function Band({ ratio, className = "" }: { ratio: number; className?: str
   const b = band(ratio);
   return (
     <span className={`inline-flex items-center gap-1.5 ${className}`}>
-      <span aria-hidden className="size-2 shrink-0 rounded-full" style={{ background: `var(--band-${b})` }} />
+      <span aria-hidden className="size-1.5 shrink-0 rotate-45" style={{ background: `var(--band-${b})` }} />
       {BANDS[b]}
     </span>
   );
@@ -26,14 +26,14 @@ export function Segmented<T extends string>({
   onChange: (key: T) => void;
 }) {
   return (
-    <div role="group" aria-label={label} className="inline-flex rounded-full border border-line bg-surface p-1 text-sm">
+    <div role="group" aria-label={label} className="inline-flex flex-wrap gap-1">
       {options.map((o) => (
         <button
           key={o.key}
           type="button"
           aria-pressed={o.key === value}
           onClick={() => onChange(o.key)}
-          className="rounded-full px-3 py-1 text-muted transition-colors hover:text-ink aria-pressed:bg-ink aria-pressed:text-bg"
+          className="key label px-3 py-2 text-muted hover:text-ink"
         >
           {o.label}
         </button>
@@ -58,19 +58,8 @@ const time = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digi
 export function Updated({ at, fetching }: { at: number; fetching: boolean }) {
   if (!at) return null;
   return (
-    <p className="text-sm text-muted" aria-live="polite">
+    <p className="label text-muted" aria-live="polite">
       {fetching ? "Updating…" : `Updated ${time.format(at)}`}
     </p>
   );
 }
-
-export function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="flex flex-col gap-1 text-sm">
-      <span className="text-muted">{label}</span>
-      {children}
-    </label>
-  );
-}
-
-export const selectClass = "h-9 rounded-md border border-line bg-surface px-2 text-sm text-ink";

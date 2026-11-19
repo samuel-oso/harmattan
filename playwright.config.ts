@@ -9,7 +9,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? "github" : "list",
-  use: { baseURL: `http://localhost:${PORT}`, trace: "on-first-retry" },
+  use: { baseURL: `http://localhost:${PORT}`, trace: "on-first-retry", contextOptions: { reducedMotion: "reduce" } },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   // the tests run against the production build, the way visitors get it
   webServer: {

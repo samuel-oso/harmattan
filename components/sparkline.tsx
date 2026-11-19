@@ -21,7 +21,7 @@ export function Sparkline({ values, guideline, color }: { values: Values; guidel
   });
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden className="h-9 w-full">
+    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" aria-hidden className="spark h-9 w-full">
       {guideline != null && (
         <line x1="0" x2={W} y1={y(guideline)} y2={y(guideline)} stroke="var(--muted)" strokeWidth="1" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" opacity="0.6" />
       )}

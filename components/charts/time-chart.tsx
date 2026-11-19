@@ -1,6 +1,6 @@
 "use client";
 
-import { CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, ReferenceArea, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { clock, dateTime, dayLabel } from "@/lib/format";
 import { DAY } from "@/lib/open-meteo";
 import { UNIT, fmt } from "@/lib/pollutants";
@@ -30,8 +30,8 @@ type TipEntry = { dataKey?: unknown; value?: unknown };
 function Tip({ active, payload, label, lines, tz }: { active?: boolean; payload?: readonly TipEntry[]; label?: unknown; lines: ChartLine[]; tz: string }) {
   if (!active || !payload?.length || typeof label !== "number") return null;
   return (
-    <div className="rounded-md border border-line bg-surface px-3 py-2 text-sm shadow-lg">
-      <p className="mb-1 text-muted">{dateTime(label, tz)}</p>
+    <div className="border border-accent bg-surface px-3 py-2 text-sm shadow-lg">
+      <p className="label mb-1.5 text-muted">{dateTime(label, tz)}</p>
       {lines.map((line) => {
         const entry = payload.find((p) => p.dataKey === line.id);
         if (typeof entry?.value !== "number") return null;
@@ -55,10 +55,13 @@ export default function TimeChart({ points, lines, guideline, tz }: Props) {
   const from = points[0]?.t ?? 0;
   const to = points[points.length - 1]?.t ?? 0;
   const short = to - from <= 2 * DAY;
-  const tick = { fontSize: 12, fill: "var(--muted)" };
+  const tick = { fontSize: 12, fill: "var(--muted)", fontFamily: "var(--font-tech), ui-monospace, monospace" };
 
+  let high = 0;
+  for (const point of points) for (const line of lines) high = Math.max(high, point[line.id] ?? 0);
   // the guideline joins the scale only when the readings come near it, so a clean pollutant is not flattened to make room
-  const top = (max: number) => roundUp(guideline != null && max >= guideline * 0.5 ? Math.max(max, guideline * 1.15) : max);
+  const near = guideline != null && high >= guideline * 0.5;
+  const top = roundUp(near ? Math.max(high, (guideline as number) * 1.15) : high);
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -81,9 +84,9 @@ export default function TimeChart({ points, lines, guideline, tz }: Props) {
           cursor={{ stroke: "var(--muted)", strokeDasharray: "2 4" }}
           content={(p) => <Tip active={p.active} payload={p.payload} label={p.label} lines={lines} tz={tz} />}
         />
-        {guideline != null && (
-          <ReferenceLine y={guideline} stroke={GUIDE.color} strokeDasharray={GUIDE.dash} />
-        )}
+        {/* everything over the guideline sits on a faint wash, so the line reads as a threshold */}
+        {guideline != null && near && <ReferenceArea y1={guideline} y2={top} fill="var(--band-3)" fillOpacity={0.08} stroke="none" />}
+        {guideline != null && <ReferenceLine y={guideline} stroke={GUIDE.color} strokeDasharray={GUIDE.dash} />}
         {lines.map((line) => (
           <Line
             key={line.id}

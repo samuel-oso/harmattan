@@ -30,5 +30,11 @@ export async function mockAirQuality(page: Page, override?: Override) {
     if (override && (await override(url, route))) return;
     await route.fulfill({ json: body(url), headers: { "access-control-allow-origin": "*" } });
   });
+  // a steady 6 m/s from the north-east at every point of the wind grid
+  await page.route("https://api.open-meteo.com/**", async (route) => {
+    const points = new URL(route.request().url()).searchParams.get("latitude")?.split(",").length ?? 0;
+    const json = Array.from({ length: points }, () => ({ current: { wind_speed_10m: 6, wind_direction_10m: 45 } }));
+    await route.fulfill({ json, headers: { "access-control-allow-origin": "*" } });
+  });
   return requests;
 }

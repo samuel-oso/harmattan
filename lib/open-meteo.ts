@@ -84,7 +84,8 @@ export function parseSeries(json: unknown, slug: string, days: number, now: numb
   return { slug, time, values };
 }
 
-export async function fetchSeries(city: City, days: number, signal?: AbortSignal, now = Date.now()): Promise<Series> {
+// every request to the data source goes through here, so the timeout and the error codes are the same everywhere
+export async function getJson(url: string, signal?: AbortSignal): Promise<unknown> {
   const timeout = AbortSignal.timeout(TIMEOUT_MS);
   const combined = signal ? AbortSignal.any([signal, timeout]) : timeout;
 
@@ -96,7 +97,7 @@ export async function fetchSeries(city: City, days: number, signal?: AbortSignal
 
   let res: Response;
   try {
-    res = await fetch(seriesUrl(city, days), { signal: combined });
+    res = await fetch(url, { signal: combined });
   } catch (cause) {
     throw failed(cause, "NETWORK");
   }
@@ -104,13 +105,15 @@ export async function fetchSeries(city: City, days: number, signal?: AbortSignal
   if (res.status >= 500) throw new DataError("UNAVAILABLE", res.status);
   if (!res.ok) throw new DataError("BAD_REQUEST", res.status);
 
-  let json: unknown;
   try {
-    json = await res.json();
+    return await res.json();
   } catch (cause) {
     throw failed(cause, "BAD_RESPONSE");
   }
-  return parseSeries(json, city.slug, days, now);
+}
+
+export async function fetchSeries(city: City, days: number, signal?: AbortSignal, now = Date.now()): Promise<Series> {
+  return parseSeries(await getJson(seriesUrl(city, days), signal), city.slug, days, now);
 }
 
 export function describe(error: unknown): string {

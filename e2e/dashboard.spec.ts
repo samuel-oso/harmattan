@@ -108,11 +108,17 @@ test("the data table sorts, filters and exports", async ({ page }) => {
   await expect(table.getByRole("columnheader", { name: "PM2.5" })).toHaveAttribute("aria-sort", "descending");
   await expect(table.getByRole("row").nth(1)).toContainText("Kano");
 
-  await page.getByRole("combobox", { name: "City" }).selectOption("lagos");
+  await page.getByRole("combobox", { name: "City" }).click();
+  await page.getByRole("option", { name: "Lagos" }).click();
   await expect(count).toHaveText("168");
   await page.getByRole("checkbox").check();
   await expect(count).toHaveText("168");
-  await page.getByRole("combobox", { name: "Pollutant to filter by" }).selectOption("pm10");
+  const limit = page.getByRole("combobox", { name: "Pollutant to filter by" });
+  await limit.focus();
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("Enter");
+  await expect(limit).toContainText("PM10");
   await expect(count).toHaveText("0");
   await expect(page.getByRole("button", { name: "Download CSV" })).toBeDisabled();
   await page.getByRole("checkbox").uncheck();
@@ -123,4 +129,94 @@ test("the data table sorts, filters and exports", async ({ page }) => {
   expect(lines).toHaveLength(169);
   expect(lines[0]).toContain("city,country,time_utc,pm2_5_ug_m3");
   expect(lines[1]).toMatch(/^Lagos,Nigeria,\d{4}-\d\d-\d\dT\d\d:00:00\.000Z,/);
+});
+
+test("the map marks every city, calls out the worst and follows the ranking", async ({ page }) => {
+  await mockAirQuality(page);
+  await page.goto("/");
+  const map = page.locator(".wind-map");
+  const called = map.locator('.pin[data-on="true"]');
+  const card = map.locator(".callout");
+  await expect(map.locator(".pin")).toHaveCount(20);
+  await expect(map.getByText("Wind right now")).toBeVisible();
+  await expect(called).toContainText("KAN");
+  await expect(card).toContainText("Kano");
+
+  await page.getByRole("listitem").filter({ hasText: "Lagos" }).hover();
+  await expect(called).toHaveCount(1);
+  await expect(called).toContainText("LOS");
+  await expect(card).toContainText("Lagos");
+  await expect(card).toContainText("Wind from NE, 6.0 m/s");
+});
+
+test("the map and the ranking still work when the wind cannot be loaded", async ({ page }) => {
+  await mockAirQuality(page);
+  let broken = true;
+  await page.route("https://api.open-meteo.com/**", (route) => (broken ? route.fulfill({ status: 400, json: { error: true } }) : route.fallback()));
+  await page.goto("/");
+  const map = page.locator(".wind-map");
+  await expect(map.getByText("The wind couldn’t be loaded.")).toBeVisible();
+  await expect(map.locator(".pin")).toHaveCount(20);
+  await expect(page.getByText(/3 of 20 cities are above/)).toBeVisible();
+
+  broken = false;
+  await map.getByRole("button", { name: "Try again" }).click();
+  await expect(map.getByText("Wind right now")).toBeVisible();
+});
+
+test("the theme switch is remembered", async ({ page }) => {
+  await mockAirQuality(page);
+  await page.goto("/");
+  const html = page.locator("html");
+  await expect(html).not.toHaveAttribute("data-theme");
+  await page.getByRole("button", { name: "Switch to light theme" }).click();
+  await expect(html).toHaveAttribute("data-theme", "light");
+  await page.reload();
+  await expect(html).toHaveAttribute("data-theme", "light");
+  await expect(page.getByRole("button", { name: "Switch to dark theme" })).toBeVisible();
+});
+
+test("the arrow keys move through the ranking like a menu", async ({ page }) => {
+  await mockAirQuality(page);
+  await page.goto("/");
+  await expect(page.getByText(/3 of 20 cities are above/)).toBeVisible();
+
+  const rows = page.getByRole("list").last().getByRole("listitem");
+  await rows.nth(0).getByRole("link", { name: "Kano" }).focus();
+  await page.keyboard.press("ArrowDown");
+  await expect(rows.nth(1).getByRole("link", { name: "Lagos" })).toBeFocused();
+  await expect(page.locator(".wind-map .callout")).toContainText("Lagos");
+  await page.keyboard.press("ArrowUp");
+  await expect(rows.nth(0).getByRole("link", { name: "Kano" })).toBeFocused();
+});
+
+test("the sound switch is remembered", async ({ page }) => {
+  await mockAirQuality(page);
+  await page.goto("/");
+  const sound = page.getByRole("button", { name: "Sound" });
+  await expect(sound).toHaveAttribute("aria-pressed", "true");
+  await sound.click();
+  await expect(sound).toHaveAttribute("aria-pressed", "false");
+  await page.reload();
+  await expect(sound).toHaveAttribute("aria-pressed", "false");
+});
+
+test.describe("with motion allowed", () => {
+  test.use({ contextOptions: { reducedMotion: "no-preference" } });
+
+  test("the start-up screen shows on every load, goes on its own, and any key skips it", async ({ page }) => {
+    await mockAirQuality(page);
+    // the screen is up for under three seconds, so don't wait for the whole page before looking for it
+    await page.goto("/", { waitUntil: "commit" });
+    const boot = page.locator(".boot");
+    await expect(boot).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(boot).toBeHidden();
+    await expect(page.getByText(/3 of 20 cities are above/)).toBeVisible();
+
+    await page.reload({ waitUntil: "commit" });
+    await expect(boot).toBeVisible();
+    await expect(boot).toBeHidden();
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  });
 });

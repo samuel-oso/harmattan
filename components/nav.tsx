@@ -13,14 +13,10 @@ export function NavLinks() {
   const pathname = usePathname();
   const active = (href: string) => (href === "/" ? pathname === "/" || pathname.startsWith("/city") : pathname.startsWith(href));
   return (
-    <ul className="flex items-center gap-1 text-sm">
+    <ul className="flex items-center sm:gap-1">
       {LINKS.map(({ href, label }) => (
         <li key={href}>
-          <Link
-            href={href}
-            aria-current={active(href) ? "page" : undefined}
-            className="rounded-full px-3 py-1.5 text-muted transition-colors hover:text-ink aria-[current=page]:bg-sunk aria-[current=page]:text-ink"
-          >
+          <Link href={href} aria-current={active(href) ? "page" : undefined} className="key label block px-1.5 py-2 text-muted hover:text-ink sm:px-3">
             {label}
           </Link>
         </li>

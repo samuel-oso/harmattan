@@ -9,14 +9,17 @@ const PAGES = [
   { path: "/data", ready: "3,360" },
 ];
 
-for (const scheme of ["light", "dark"] as const) {
+for (const theme of ["dark", "light"] as const) {
   for (const { path, ready } of PAGES) {
-    test(`${path} has no detectable accessibility problems (${scheme})`, async ({ page }) => {
-      await page.emulateMedia({ colorScheme: scheme });
+    test(`${path} has no detectable accessibility problems (${theme})`, async ({ page }) => {
+      await page.addInitScript((saved) => localStorage.setItem("harmattan:theme", saved), theme);
       await mockAirQuality(page);
       await page.goto(path);
       await expect(page.getByText(ready).first()).toBeVisible();
       await expect(page.locator(".skeleton")).toHaveCount(0);
+      const html = page.locator("html");
+      if (theme === "light") await expect(html).toHaveAttribute("data-theme", "light");
+      else await expect(html).not.toHaveAttribute("data-theme");
       const { violations } = await new AxeBuilder({ page }).analyze();
       expect(violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(" | ")}`)).toEqual([]);
     });

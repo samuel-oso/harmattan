@@ -1,6 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import type { City } from "@/lib/cities";
 import { DataError, fetchSeries } from "@/lib/open-meteo";
+import { loadWind } from "@/lib/wind";
 
 export type RangeKey = "24h" | "7d" | "30d" | "90d";
 
@@ -18,6 +19,9 @@ export const MAX_RETRIES = 3;
 // one more day than is shown, so a 24-hour mean exists for the very first hour on screen
 export const LEAD_DAYS = 1;
 
+const retry = (failures: number, error: Error) => error instanceof DataError && error.retryable && failures < MAX_RETRIES;
+const retryDelay = (attempt: number) => Math.min(1000 * 2 ** attempt, 8000);
+
 export const seriesQuery = (city: City, days: number) =>
   queryOptions({
     queryKey: ["series", city.slug, days] as const,
@@ -25,6 +29,15 @@ export const seriesQuery = (city: City, days: number) =>
     // the source updates hourly, so a reading is good for a while and refreshes quietly after that
     staleTime: 15 * 60_000,
     gcTime: 60 * 60_000,
-    retry: (failures, error) => error instanceof DataError && error.retryable && failures < MAX_RETRIES,
-    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 8000),
+    retry,
+    retryDelay,
   });
+
+export const windQuery = queryOptions({
+  queryKey: ["wind"] as const,
+  queryFn: ({ signal }) => loadWind(signal),
+  staleTime: 30 * 60_000,
+  gcTime: 60 * 60_000,
+  retry,
+  retryDelay,
+});

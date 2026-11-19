@@ -6,6 +6,7 @@ import { DataError, fetchSeries } from "@/lib/open-meteo";
 import { useView } from "@/lib/store";
 import { series } from "./fixtures";
 
+jest.mock("@/components/wind-map", () => ({ WindMap: () => null }));
 jest.mock("@/lib/open-meteo", () => ({ ...jest.requireActual("@/lib/open-meteo"), fetchSeries: jest.fn() }));
 
 const fetchMock = jest.mocked(fetchSeries);
