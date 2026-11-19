@@ -14,12 +14,15 @@
   },
   "dependencies": {
     "@tanstack/react-query": "5.108.0",
+    "@tanstack/react-virtual": "3.14.26",
     "next": "16.4.6",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "recharts": "3.11.0",
     "zustand": "5.1.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@playwright/test": "1.65.1",
     "@tailwindcss/turbopack": "4.3.3",
     "@testing-library/dom": "10.4.2",
