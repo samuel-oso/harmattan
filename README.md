@@ -1,8 +1,12 @@
 # Harmattan
 
+[![CI](https://github.com/samuel-oso/harmattan/actions/workflows/ci.yml/badge.svg)](https://github.com/samuel-oso/harmattan/actions/workflows/ci.yml)
+
 Air quality across African cities, hour by hour. Named after the dry, dusty wind that crosses West Africa each year.
 
-**Live:** [harmattan-09s.vercel.app](https://harmattan-09s.vercel.app). Setting `launched` to `false` in `lib/site.ts` tells search engines to stay away.
+**Live:** [harmattan-09s.vercel.app](https://harmattan-09s.vercel.app) · **Case study:** [how and why I built it](https://samuel-oso-portfolio.vercel.app/work/harmattan)
+
+![The overview screen: 20 cities ranked by fine particles, beside a map of Africa with each city marked by its level](docs/overview.png)
 
 ## Screens
 
@@ -23,9 +27,20 @@ The wind is Open-Meteo's current 10 m wind on a coarse grid, blended between gri
 
 Next.js (App Router), React, TypeScript, Tailwind CSS, TanStack Query, Zustand, Recharts, TanStack Virtual and Lenis, tested with Jest, Playwright and axe.
 
-The site's address, for the sitemap and for links shared elsewhere, is taken from Vercel at build time. Set `NEXT_PUBLIC_SITE_URL` to use a custom domain or another host.
+The site's address, for the sitemap and for links shared elsewhere, is taken from Vercel at build time. Set `NEXT_PUBLIC_SITE_URL` to use a custom domain or another host. Setting `launched` to `false` in `lib/site.ts` tells search engines to stay away.
 
 The title face is [Black Ops One](https://fonts.google.com/specimen/Black+Ops+One) (SIL Open Font License); a copy sits in `assets/` for the image shown when a link is shared.
+
+## Run it locally
+
+Needs Node 24 or newer. There are no keys or accounts to set up; the data comes from a free public API.
+
+```sh
+git clone https://github.com/samuel-oso/harmattan.git
+cd harmattan
+npm ci
+npm run dev
+```
 
 ## Scripts
 
