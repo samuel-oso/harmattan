@@ -3,8 +3,9 @@ import type { Page, Route } from "@playwright/test";
 const HOUR = 3600;
 const KEYS = ["pm2_5", "pm10", "nitrogen_dioxide", "ozone", "sulphur_dioxide", "carbon_monoxide", "dust"];
 
-// PM2.5 level for a few cities, by latitude; every other city sits below the guideline
-const LEVELS: Record<string, number> = { "12.0001": 90, "6.4541": 30, "9.0579": 20 };
+// PM2.5 level for a few cities, by latitude; every other city sits below the guideline.
+// Each level is well inside its band: a mean that lands exactly on a band's edge falls either side by rounding.
+const LEVELS: Record<string, number> = { "12.0001": 90, "6.4541": 36, "9.0579": 20 };
 export const LATITUDE = { kano: "12.0001", lagos: "6.4541", abuja: "9.0579" };
 
 export function body(url: URL) {
