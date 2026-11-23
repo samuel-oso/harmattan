@@ -4,7 +4,7 @@
 
 Air quality across African cities, hour by hour. Named after the dry, dusty wind that crosses West Africa each year.
 
-**Live:** [harmattan-09s.vercel.app](https://harmattan-09s.vercel.app) · **Case study:** [how and why I built it](https://samuel-oso-portfolio.vercel.app/work/harmattan)
+**Live:** [harmattan-09s.vercel.app](https://harmattan-09s.vercel.app) · **Case study:** [how and why I built it](https://www.samueloso.com/work/harmattan)
 
 ![The overview screen: 20 cities ranked by fine particles, beside a map of Africa with each city marked by its level](docs/overview.png)
 
